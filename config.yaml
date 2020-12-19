@@ -1,0 +1,21 @@
+---
+sourceClouds:
+- "/home/gchahine/mapperOutput/0/icp_local_semantics.pcd"
+- "/home/gchahine/mapperOutput/1/icp_local_semantics.pcd"
+- "/home/gchahine/mapperOutput/2/icp_local_semantics.pcd"
+- "/home/gchahine/mapperOutput/3/icp_local_semantics.pcd"
+- "/home/gchahine/mapperOutput/4/icp_local_semantics.pcd"
+sourceTrajectories:
+- "/home/gchahine/mapperOutput/0/icp_local_semantics.csv"
+- "/home/gchahine/mapperOutput/1/icp_local_semantics.csv"
+- "/home/gchahine/mapperOutput/2/icp_local_semantics.csv"
+- "/home/gchahine/mapperOutput/3/icp_local_semantics.csv"
+- "/home/gchahine/mapperOutput/4/icp_local_semantics.csv"
+mapRegistration: "gps"
+semantics: "True"
+voxelSize: "0.1"
+pathOut: "/home/gchahine/matcherOutput/"
+icpConfig: "/home/gchahine/packages/dream-multi-matcher/icpConfig/icp_param.yaml"
+icpInputFilters: "/home/gchahine/packages/dream-multi-matcher/icpConfig/input_filters.yaml"
+icpPostFilters: "/home/gchahine/packages/dream-multi-matcher/icpConfig/mapPost_filters.yaml"
+icpComputeProbDynamic: "True"
