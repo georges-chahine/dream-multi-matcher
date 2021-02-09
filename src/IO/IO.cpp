@@ -347,7 +347,7 @@ void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std
             std::cout<<"Selection:"<<std::endl;
             //std::cin >> selection;
 
-            if (false) {     //if (autoMatch)
+            if (autoMatch) {     //if (false)
                 selection="all";
             }
             else{
