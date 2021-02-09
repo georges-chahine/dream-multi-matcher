@@ -109,25 +109,36 @@ void IO::alignTrajectories(MatrixXd& newTrajectory, MatrixXd& oldTrajectory, TP&
 
     for (int i=1; i<newTrajectory.rows(); i++)
     {
-        if (newTrajectoryDistancesCumulative(0,i)>newTh)
+        if (newTrajectoryDistancesCumulative(0,i)>newTh){
             newHalfDistIdx=i;
-        newHalfDistPt<< newTrajectory(i,1), newTrajectory(i,2), newTrajectory(i,3);
-        std::cout<<"newHalfDistPt is "<<newHalfDistPt<< " new half dist is "<< newTh <<std::endl;
-        break;
+            newHalfDistPt<< newTrajectory(i,1), newTrajectory(i,2), newTrajectory(i,3);
+            std::cout<<"newHalfDistPt is "<<newHalfDistPt<< " new half dist is "<< newTh <<std::endl;
+            break;
+        }
     }
 
 
     for (int i=1; i<oldTrajectory.rows(); i++)
     {
-        if (oldTrajectoryDistancesCumulative(0,i)>oldTh)
+        if (oldTrajectoryDistancesCumulative(0,i)>oldTh){
             oldHalfDistIdx=i;
-        oldHalfDistPt<< oldTrajectory(i,1), oldTrajectory(i,2), oldTrajectory(i,3);
-        std::cout<<"oldHalfDistPt is "<<oldHalfDistPt<< " old half dist is "<< oldTh <<std::endl;
-        break;
+            oldHalfDistPt<< oldTrajectory(i,1), oldTrajectory(i,2), oldTrajectory(i,3);
+            std::cout<<"oldHalfDistPt is "<<oldHalfDistPt<< " old half dist is "<< oldTh <<std::endl;
+            break;
+        }
     }
 
-    Vector3d translation=oldHalfDistPt-newHalfDistPt;
+    Vector3d translation(0,0,0);    //=oldHalfDistPt-newHalfDistPt;
 
+    // for (int i=0; i<newTrajectory.rows(); i++)
+    // {
+    //    newTrajectory(i,1)=newTrajectory(i,1)+translation(0);
+    //    newTrajectory(i,2)=newTrajectory(i,2)+translation(1);
+    //    newTrajectory(i,3)=newTrajectory(i,3)+translation(2);
+
+    // }
+
+    //std::cout<<"new trajec is \n"<<newTrajectory<<std::endl;
     float theta=0;
     while (theta<360){
 
@@ -162,8 +173,8 @@ void IO::alignTrajectories(MatrixXd& newTrajectory, MatrixXd& oldTrajectory, TP&
         {
 
             Vector4d transformedPoint(newTrajectory(i,1),newTrajectory(i,2),newTrajectory(i,3),1);
-            transformedPoint(0)=transformedPoint(0)+translation(0);
-            transformedPoint(1)=transformedPoint(1)+translation(1);    //points at mid distances aligned
+            // transformedPoint(0)=transformedPoint(0)+translation(0);
+            // transformedPoint(1)=transformedPoint(1)+translation(1);    //points at mid distances aligned
 
             transformedPoint=prior2.matrix()*transformedPoint;
 
@@ -171,17 +182,23 @@ void IO::alignTrajectories(MatrixXd& newTrajectory, MatrixXd& oldTrajectory, TP&
             transformedNewTrajectory(1,i)=transformedPoint(1);
             transformedNewTrajectory(2,i)=transformedPoint(2);
         }
+
+        //prior2.matrix()(0,3)=oldTrajectory(0,1)-newTrajectory(0,1);
+        // prior2.matrix()(1,3)=oldTrajectory(0,2)-newTrajectory(0,2);
+
+
         prior2.matrix()(0,3)=translation(0);
         prior2.matrix()(1,3)=translation(1);
         double lowestDistance;
         double error=0;
 
+        // std::cout<<"new transformed trajec is \n"<<transformedNewTrajectory<<std::endl;
         for (int i=0; i<newTrajectory.rows(); i++){  //nearest neighbor
             lowestDistance=999999999999999;
             for (int j=0; j<oldTrajectory.rows(); j++)
             {
                 double distance=sqrt(pow(transformedNewTrajectory(0,i)-oldTrajectory(j,1),2)+pow(transformedNewTrajectory(1,i)-oldTrajectory(j,2),2) );
-                //   std::cout<<"distance is "<<distance<<std::endl;
+                // std::cout<<"distance is "<<distance<<std::endl;
                 if (distance<lowestDistance){
 
                     lowestDistance=distance;
@@ -190,7 +207,7 @@ void IO::alignTrajectories(MatrixXd& newTrajectory, MatrixXd& oldTrajectory, TP&
             }
             error=lowestDistance+error;
         }
-        //      std::cout<<"error is "<<error<<std::endl;
+        //std::cout<<"error is "<<error<<std::endl;
         if (error<lowestError)   //get theta that gives the lowest nearest neighbor error
         {
             lowestError=error;
@@ -207,11 +224,103 @@ void IO::alignTrajectories(MatrixXd& newTrajectory, MatrixXd& oldTrajectory, TP&
     std::cout<<"lowestError is "<<lowestError<<std::endl;
 
 
+    //translation
+
+    theta=lowestTheta;
+    Eigen::Affine3d prior2= Eigen::Affine3d::Identity();
+    float thetaR=theta*3.14159265/180;
+    prior2.matrix()(0,0)=cos(thetaR);
+    prior2.matrix()(0,1)=-sin(thetaR);
+    prior2.matrix()(0,2)=0;
+    prior2.matrix()(0,3)=0;   //this works only because we are rotating only in Z and moving x y. Otherwise, should do in this case the translation before the rotation.
+
+    prior2.matrix()(1,0)=sin(thetaR);
+    prior2.matrix()(1,1)=cos(thetaR);
+    prior2.matrix()(1,2)=0;
+    prior2.matrix()(1,3)=0;
+
+    prior2.matrix()(2,0)=0;
+    prior2.matrix()(2,1)=0;
+    prior2.matrix()(2,2)=1;
+    prior2.matrix()(2,3)=0;
+
+    prior2.matrix()(3,0)=0;
+    prior2.matrix()(3,1)=0;
+    prior2.matrix()(3,2)=0;
+    prior2.matrix()(3,3)=1;
+
+
+
+    MatrixXd transformedNewTrajectory=Eigen::MatrixXd::Constant(3, newTrajectory.rows(),1);
+
+
+    for (int i=0; i<newTrajectory.rows(); i++)
+    {
+
+        Vector4d transformedPoint(newTrajectory(i,1),newTrajectory(i,2),newTrajectory(i,3),1);
+        // transformedPoint(0)=transformedPoint(0)+translation(0);
+        // transformedPoint(1)=transformedPoint(1)+translation(1);    //points at mid distances aligned
+
+        transformedPoint=prior2.matrix()*transformedPoint;
+
+        transformedNewTrajectory(0,i)=transformedPoint(0);
+        transformedNewTrajectory(1,i)=transformedPoint(1);
+        transformedNewTrajectory(2,i)=transformedPoint(2);
+    }
+    MatrixXd transformedNewTrajectory2=Eigen::MatrixXd::Constant(3, newTrajectory.rows(),1);
+    lowestError=9999999999999999;
+    for (int x=-30; x<30; x++){
+        for (int y=-30; y<30; y++){
+            transformedNewTrajectory2=transformedNewTrajectory;
+            for (int i=0; i<newTrajectory.rows(); i++)
+            {
+                transformedNewTrajectory2(0,i)=transformedNewTrajectory2(0,i)+x;
+                transformedNewTrajectory2(1,i)=transformedNewTrajectory2(1,i)+y;
+
+            }
+            double lowestDistance;
+            double error=0;
+
+            // std::cout<<"new transformed trajec is \n"<<transformedNewTrajectory<<std::endl;
+            for (int i=0; i<newTrajectory.rows(); i++){  //nearest neighbor
+                lowestDistance=999999999999999;
+                for (int j=0; j<oldTrajectory.rows(); j++)
+                {
+                    double distance=sqrt(pow(transformedNewTrajectory2(0,i)-oldTrajectory(j,1),2)+pow(transformedNewTrajectory2(1,i)-oldTrajectory(j,2),2) );
+                    // std::cout<<"distance is "<<distance<<std::endl;
+                    if (distance<lowestDistance){
+                        lowestDistance=distance;
+                    }
+                }
+                error=lowestDistance+error;
+            }
+            //std::cout<<"error is "<<error<<std::endl;
+            if (error<lowestError)   //get theta that gives the lowest nearest neighbor error
+            {
+                lowestError=error;
+                prior(0,3)=x; prior(1,3)=y;
+            }
+        }
+    }
+
+
+
 }
 
-void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std::vector<pcl::PointCloud<pcl::Normal>> normals, std::vector<std::string> sourceTrajectories, std::string currentPath, std::string rMethod , int mapNumber, bool semantics, float leafSize, std::string icpConfigFilePath, std::string inputFiltersConfigFilePath, std::string mapPostFiltersConfigFilePath, bool computeProbDynamic)
+void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std::vector<pcl::PointCloud<pcl::Normal>> normals, std::vector<std::string> sourceTrajectories, std::vector<std::vector<unsigned int>> matchLogIdx, bool spatialAlignment, bool autoMatch, std::string currentPath, std::string rMethod , int mapNumber, bool semantics, float leafSize, std::string icpConfigFilePath, std::string inputFiltersConfigFilePath, std::string mapPostFiltersConfigFilePath, bool computeProbDynamic)
 {
+    std::ofstream poseStream;
+    poseStream.precision(16);
+    std::string posePath= currentPath + "/transforms.csv" ;
+    poseStream.open (posePath.c_str(), std::fstream::out | std::fstream::app);
+    poseStream <<"%KF,time_period,x,y,z,qx,qy,qz,qw\n";
+    if (autoMatch){
+        std::cout<<"matching keyframes \n";
+        for (unsigned int i=0; i<matchLogIdx.size(); i++){
+            std::cout <<"KF"<<matchLogIdx[i][0]<<" from time period "<<matchLogIdx[i][1]<<std::endl;
 
+        }
+    }
 
     std::vector<std::string> filteredPath;
     //---------------------------------------------REGISTRATION-----------------------------------------------
@@ -236,7 +345,15 @@ void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std
             std::cout<<"REMARK: When finished, type exit to process next survey"<<std::endl;
 
             std::cout<<"Selection:"<<std::endl;
-            std::cin >> selection;
+            //std::cin >> selection;
+
+            if (false) {     //if (autoMatch)
+                selection="all";
+            }
+            else{
+
+                std::cin >> selection;
+            }
 
             std::cout<<std::endl;
 
@@ -249,6 +366,14 @@ void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std
                 //    pcl::io::savePCDFileASCII (fullPath1, XYZRGBL[0]);
                 //   pcl::io::savePLYFileASCII (fullPath2, XYZRGBL[0]);
 
+                if (autoMatch){
+                    poseStream<<matchLogIdx[0][0]<<","<<matchLogIdx[0][1]<<","<<0<<","<<0<<","<<0<<","<<0<<","<<0<<","<<0<<","<<1<<std::endl;
+                }
+                else{
+
+                    poseStream<<0<<","<<0<<","<<0<<","<<0<<","<<0<<","<<0<<","<<0<<","<<0<<","<<1<<std::endl;
+
+                }
                 for (int i=1; i<XYZRGBL.size(); i++)
                 {
                     MatrixXd newTrajectory = load_csv<MatrixXd>(sourceTrajectories[i]);
@@ -256,32 +381,87 @@ void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std
 
                     //std::cout<<"size is "<<newTrajectory.size()<<std::endl;
                     TP prior = TP::Identity(4,4);
-                    alignTrajectories(newTrajectory,oldTrajectory, prior);
-
-                    std::cout<<"prior is "<<prior.matrix()<<std::endl;
-
                     //TP prior = initialEstimate.matrix().cast<float>();
 
                     //   std::cout<<"T_previous_alignment is "<<T_previous_alignment<<std::endl;
                     std::string filename= "aligned_" + std::to_string(i);
+                    //std::string filename= "aligned_" + std::to_string(matchLogIdx[i][0])+"_"+std::to_string(matchLogIdx[i][1]);
+                    //prior2.matrix()(0,3)=oldTrajectory(0,1)-newTrajectory(0,1);
+                    // prior2.matrix()(1,3)=oldTrajectory(0,2)-newTrajectory(0,2);
+                    if (spatialAlignment){
+                        double distance=9999999;
+                        double timeMatch=newTrajectory(0,0);
+                        unsigned int spatialIndex;
 
+                        double smallestTime=999;
+                        for (int kk=0; kk<oldTrajectory.rows(); kk++)
+                        {
+                            double dt=oldTrajectory(kk,0)-timeMatch;
+                            //std::cout<< "abs(dt) is" << abs(dt) <<std::endl;
+                            if (abs(dt)<smallestTime)
+                            {
+                                smallestTime=abs(dt);
+                                spatialIndex=kk;
+                            }
+                        }
+                        std::cout<<"spatial index is "<<spatialIndex<<std::endl;
+                        float xIncr=oldTrajectory(spatialIndex,1)-oldTrajectory(0,1);
+                        float yIncr=oldTrajectory(spatialIndex,2)-oldTrajectory(0,2);
+                        float zIncr=oldTrajectory(spatialIndex,3)-oldTrajectory(0,3);
 
+                        //int kk=0;
+                        //double deltaKf=25;
+                        // float refX=newTrajectory(0,1);
+                        // float refY=newTrajectory(0,2);
+                        /*   for (int k=0; k<oldTrajectory.rows(); k++)
+                        {
+                            //std::cout<<"i is ----"<<i<<std::endl;
+                            //std::cout<<"i is "<<i<< "new trajectory is "<< newTrajectory(i,1)<<std::endl;
+                            float oldX=oldTrajectory(k,1);
+                            float oldY=oldTrajectory(k,2);
+                            float penalty=fabs(oldX-refX)+fabs(oldY-refY);
+                            if (penalty<distance){
+                                kk=k;
+                                distance=penalty;
+                            }
+                            //distance=sqrt(pow(oldTrajectory(k-1,1)-oldTrajectory(k,1),2)+pow(oldTrajectory(k-1,2)-oldTrajectory(k,2),2) )+distance;
+
+                            //if (distance >=deltaKf) break;
+                            //kk=k;
+                        }
+                      */
+
+                        std::cout<<"spacial alignment active"<<std::endl;
+                        prior(0,3)=xIncr;prior(1,3)=yIncr;prior(2,3)=zIncr;
+
+                        // std::cout<<"incrementing x by "<< xIncr<<" and y by "<< yIncr<<std::endl;
+                    }
+
+                    else{
+                        alignTrajectories(newTrajectory,oldTrajectory, prior);
+                    }
+                    std::cout<<"prior is \n"<<prior.matrix()<<std::endl;
                     T_previous_alignment=PM::TransformationParameters::Identity(4,4);  //comment out this line if matching with XYZRGBL[i-1] instead of XYZRGBL[0]
 
                     ICP* Icp =new ICP();
-                    Icp->alignMaps(XYZRGBL[0],normals[0], XYZRGBL[i],normals[i], prior, currentPath, filename, leafSize,icpConfigFilePath, inputFiltersConfigFilePath, mapPostFiltersConfigFilePath, computeProbDynamic, semantics, T_previous_alignment );
+                    Icp->alignMaps(XYZRGBL[0],normals[0], XYZRGBL[i],normals[i], prior, spatialAlignment, currentPath, filename, leafSize,icpConfigFilePath, inputFiltersConfigFilePath, mapPostFiltersConfigFilePath, computeProbDynamic, semantics, T_previous_alignment );
+                    Eigen::Matrix3f poseRot=T_previous_alignment.block(0,0,3,3);
+                    Eigen::Quaternionf q(poseRot);
+                    if (autoMatch){
+                        poseStream<<matchLogIdx[i][0]<<","<<matchLogIdx[i][1]<<","<<T_previous_alignment(0,3)<<","<<T_previous_alignment(1,3)<<","<<T_previous_alignment(2,3)<<","<<q.x()<<","<<q.y()<<","<<q.z()<<","<<q.w()<<std::endl;
+                    }
+                    else{
+                        poseStream<<0<<","<<0<<","<<T_previous_alignment(0,3)<<","<<T_previous_alignment(1,3)<<","<<T_previous_alignment(2,3)<<","<<q.x()<<","<<q.y()<<","<<q.z()<<","<<q.w()<<std::endl;
+                    }
+
                     delete Icp;
                 }
-
-
-
 
             }
 
             if  (selection=="exit" || selection=="all" ){break;}
         }
-
-
     }
+    poseStream.close();
 }
 }

@@ -1,6 +1,6 @@
 matcher:
   KDTreeMatcher:
-    knn: 1500  #10
+    knn: 2000  #10
     maxDist: inf  #2
     searchType: 2
     epsilon: inf
@@ -46,7 +46,7 @@ transformationCheckers:
       maxIterationCount: 500
   - BoundTransformationChecker:
       maxRotationNorm: 1
-      maxTranslationNorm: 25  #1.7
+      maxTranslationNorm: 45  #1.7
 
 inspector:
 #   VTKFileInspector:

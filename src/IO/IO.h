@@ -63,7 +63,7 @@ public:
 
    // void read_directory(const std::string& name, stringvec& v);
     void alignTrajectories(Eigen::MatrixXd& newTrajectory, Eigen::MatrixXd& oldTrajectory, PM::TransformationParameters& prior);
-    void readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std::vector<pcl::PointCloud<pcl::Normal>> normals, std::vector<std::string> sourceTrajectories, std::string currentPath, std::string rMethod , int mapNumber, bool semantics, float leafSize, std::string icpConfigFilePath, std::string inputFiltersConfigFilePath, std::string mapPostFiltersConfigFilePath, bool computeProbDynamic);
+    void readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std::vector<pcl::PointCloud<pcl::Normal>> normals, std::vector<std::string> sourceTrajectories, std::vector<std::vector<unsigned int>> matchLogIdx, bool spatialAlignment, bool autoMatch, std::string currentPath, std::string rMethod , int mapNumber, bool semantics, float leafSize, std::string icpConfigFilePath, std::string inputFiltersConfigFilePath, std::string mapPostFiltersConfigFilePath, bool computeProbDynamic);
 
     //bool compareFunction (std::string a, std::string b);
 

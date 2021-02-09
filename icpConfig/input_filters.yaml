@@ -13,7 +13,7 @@
     threshold: 0.01
 
 - RandomSamplingDataPointsFilter:
-    prob: 0.8
+    prob: 0.035
 
 ## - OctreeGridDataPointsFilter:
 ##     maxSizeByNode: 0.3

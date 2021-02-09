@@ -49,27 +49,27 @@ std::vector<std::string> labels { "Ground",
                                                "Labelless",
                                                "Other"};
 
-std::vector<float> semanticWeights  { 0.5,
-                                      1.0,
-                                      1.0,
-                                      0.5,
-                                      1.,
-                                      1.,
-                                      0.5,
-                                      1.0,
-                                      0.15,   //vegetation
-                                      0.5,   //terrain
-                                      0.,
-                                      0.,
-                                      0.,
-                                      0.,
-                                      0.,
-                                      0.,
-                                      0.,
-                                      0.,
-                                      0.,
-                                      0.25,
-                                      0.};
+std::vector<float> semanticWeights  { 0.05,  //ground
+                                      0.05,  //sidewalk
+                                      1.,   //building
+                                      1.,   //wall
+                                      0.5,  //fence
+                                      1.,   //build
+                                      1.,   //pole
+                                      1.0,  //traffic sign
+                                      0.75,   //vegetation
+                                      0.05,   //terrain
+                                      0.,  //sky
+                                      0.,   //person
+                                      0.,   //rider
+                                      0.,   //car
+                                      0.,   //truck
+                                      0.,   //bus
+                                      0.,   //train
+                                      0.,   //motorcycle
+                                      0.,   //bike
+                                      0.25, //labelesss
+                                      0.};  //other
 
 
 }

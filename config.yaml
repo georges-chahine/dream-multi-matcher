@@ -1,21 +1,25 @@
 ---
 sourceClouds:
-- "/home/gchahine/mapperOutput/0/icp_local_semantics.pcd"
-- "/home/gchahine/mapperOutput/1/icp_local_semantics.pcd"
-- "/home/gchahine/mapperOutput/2/icp_local_semantics.pcd"
-- "/home/gchahine/mapperOutput/3/icp_local_semantics.pcd"
-- "/home/gchahine/mapperOutput/4/icp_local_semantics.pcd"
+- /home/gchahine/outbound/0/semantic_icp_3.pcd
+- /home/gchahine/outbound/2/semantic_icp_3.pcd
 sourceTrajectories:
-- "/home/gchahine/mapperOutput/0/icp_local_semantics.csv"
-- "/home/gchahine/mapperOutput/1/icp_local_semantics.csv"
-- "/home/gchahine/mapperOutput/2/icp_local_semantics.csv"
-- "/home/gchahine/mapperOutput/3/icp_local_semantics.csv"
-- "/home/gchahine/mapperOutput/4/icp_local_semantics.csv"
+- /home/gchahine/outbound/0/semantic_icp_3.csv
+- /home/gchahine/outbound/2/semantic_icp_3.csv
 mapRegistration: "gps"
 semantics: "True"
-voxelSize: "0.1"
+voxelSize: "0.19"
 pathOut: "/home/gchahine/matcherOutput/"
 icpConfig: "/home/gchahine/packages/dream-multi-matcher/icpConfig/icp_param.yaml"
 icpInputFilters: "/home/gchahine/packages/dream-multi-matcher/icpConfig/input_filters.yaml"
 icpPostFilters: "/home/gchahine/packages/dream-multi-matcher/icpConfig/mapPost_filters.yaml"
 icpComputeProbDynamic: "True"
+autoMatch: "true"
+autoMatchDir:
+- "/home/gchahine/outbound/0/"
+- "/home/gchahine/outbound/1/"
+- "/home/gchahine/outbound/2/"
+autoNameTemplate: "semantic_icp_"
+autoKeyFrameDelta: "25"  
+autoVerify: "True"
+
+

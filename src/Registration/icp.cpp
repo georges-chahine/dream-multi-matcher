@@ -11,7 +11,7 @@ ICP::~ICP()
 {
 }
 
-void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud<pcl::Normal> ref_normals, pcl::PointCloud<pcl::PointXYZRGBL> pcl_new, pcl::PointCloud<pcl::Normal> new_normals, PM::TransformationParameters prior, std::string currentPath, std::string filename, float leafSize, std::string icpConfigFilePath, std::string inputFiltersConfigFilePath, std::string mapPostFiltersConfigFilePath, bool computeProbDynamic, bool semantics, PM::TransformationParameters &T_previous_alignment )
+void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud<pcl::Normal> ref_normals, pcl::PointCloud<pcl::PointXYZRGBL> pcl_new, pcl::PointCloud<pcl::Normal> new_normals, PM::TransformationParameters prior, bool spacialAlignment, std::string currentPath, std::string filename, float leafSize, std::string icpConfigFilePath, std::string inputFiltersConfigFilePath, std::string mapPostFiltersConfigFilePath, bool computeProbDynamic, bool semantics, PM::TransformationParameters &T_previous_alignment )
 {
 
     // ---------------------------------------------------------------------------------------------------------------//
@@ -249,11 +249,6 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
     //if(mapPointCloud.getNbPoints()  == 0)
     // {
 
-
-
-
-
-
     //     continue;
     // }
 
@@ -265,7 +260,19 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
         // sequence.
         //const TP prior = TP::Identity(4,4); //T_to_map_from_new*initialEstimate.matrix().cast<float>();
 
-        T_to_map_from_new = icp(newCloud, mapPointCloud, prior);
+
+
+        // maps are already in the same global frame
+        if (false)//if (spacialAlignment)
+        {
+            T_to_map_from_new=prior;
+
+        }
+        else
+        {
+            T_to_map_from_new = icp(newCloud, mapPointCloud, prior);
+
+        }
 
     }
     catch (PM::ConvergenceError& error)
@@ -300,7 +307,7 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
 
     PM::TransformationParameters T=T_to_map_from_new;
     // PM::TransformationParameters T=initialEstimate.matrix().cast<float>();
-    std::cout<<"correction is"<<T_to_map_from_new<<std::endl;
+    std::cout<<"correction is \n"<<T_to_map_from_new<<std::endl;
 
     transformICP.matrix()=T_previous_alignment.cast <double> () * T.cast <double> ();
 
