@@ -1,10 +1,10 @@
 ---
 sourceClouds:
 - /home/gchahine/outbound/0/semantic_icp_3.pcd
-- /home/gchahine/outbound/2/semantic_icp_3.pcd
+- /home/gchahine/outbound/1/semantic_icp_3.pcd
 sourceTrajectories:
 - /home/gchahine/outbound/0/semantic_icp_3.csv
-- /home/gchahine/outbound/2/semantic_icp_3.csv
+- /home/gchahine/outbound/1/semantic_icp_3.csv
 mapRegistration: "gps"
 semantics: "True"
 voxelSize: "0.19"
@@ -14,10 +14,11 @@ icpInputFilters: "/home/gchahine/packages/dream-multi-matcher/icpConfig/input_fi
 icpPostFilters: "/home/gchahine/packages/dream-multi-matcher/icpConfig/mapPost_filters.yaml"
 icpComputeProbDynamic: "True"
 autoMatch: "true"
+autoLoopClose: "true"
+loopCloseKF: "semantic_icp_lc"
 autoMatchDir:
 - "/home/gchahine/outbound/0/"
 - "/home/gchahine/outbound/1/"
-- "/home/gchahine/outbound/2/"
 autoNameTemplate: "semantic_icp_"
 autoKeyFrameDelta: "25"  
 autoVerify: "True"

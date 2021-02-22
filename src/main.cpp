@@ -19,6 +19,10 @@ int main()
     YAML::Node config = YAML::LoadFile("../config.yaml");
     std::string pathOut = config["pathOut"].as<std::string>();
     std::string rMethod = config["mapRegistration"].as<std::string>();
+
+
+    std::string loopCloseKF = config["loopCloseKF"].as<std::string>();
+
     std::string autoNameTemplate = config["autoNameTemplate"].as<std::string>();
     std::string leafSize0 = config["voxelSize"].as<std::string>();
     float leafSize=std::stod(leafSize0);
@@ -36,18 +40,47 @@ int main()
     {
         autoMatch=true;
     }
+
+    std::string loopCloseStr = config["autoLoopClose"].as<std::string>();
+
+    bool loopClose=false;
+
+    if (loopCloseStr=="True" || loopCloseStr=="true")
+    {
+        loopClose=true;
+    }
+
+
+
     int mapNumber=sourceClouds.size();
     int dirNumber=autoMatchDir.size();
     std::vector<std::vector<std::string>> pcdFiles;
     std::vector<std::vector<std::string>> csvFiles;
     std::vector<std::vector<std::vector<unsigned int>>> matchIdx;
+
+
+    std::string strPcdNameLc;
+    std::string strCsvNameLc;
+
     if (autoMatch){
 
         for (int i=0;  i<dirNumber; i++ )
         {
+
+
             int j=0;
+
             std::vector<std::string> pcdFile;
             std::vector<std::string> csvFile;
+            if (loopClose){
+
+                std::string strPcdNameLc=autoMatchDir[i]+"/"+loopCloseKF+".pcd";
+                std::string strCsvNameLc=autoMatchDir[i]+"/"+loopCloseKF+".csv";
+
+                pcdFile.push_back(strPcdNameLc);
+                csvFile.push_back(strCsvNameLc);
+            }
+
             while(true){
 
                 std::string strPcdName=autoMatchDir[i]+"/"+autoNameTemplate+std::to_string(j)+".pcd";
@@ -57,9 +90,13 @@ int main()
 
                 if (!fPcd.good()||!fCsv.good())
                 {
+                    if (loopClose){
+                        pcdFile.push_back(strPcdNameLc);
+                        pcdFile.push_back(strCsvNameLc);
+                    }
                     break;
                 }
-            //    std::cout<<"string is \n"<<strPcdName<<std::endl;
+                //    std::cout<<"string is \n"<<strPcdName<<std::endl;
 
                 pcdFile.push_back(strPcdName);
                 csvFile.push_back(strCsvName);
@@ -68,7 +105,10 @@ int main()
             }
             pcdFiles.push_back(pcdFile);
             csvFiles.push_back(csvFile);
+
         }
+
+
 
 
         for (unsigned int i=0;  i<(dirNumber-1); i++ ){
@@ -93,6 +133,10 @@ int main()
     {
         autoVerify=true;
     }
+
+
+
+
 
     std::string computeProbDynamicstr = config["icpComputeProbDynamic"].as<std::string>();
     bool computeProbDynamic=false;
@@ -209,13 +253,13 @@ int main()
                 std::cout<<"matching in progress"<<std::endl;
                 dir=mkdir (currentPath.c_str(),S_IRWXU);
                 IO* Io =new IO();
-                Io ->readClouds(XYZRGBL1, normals1, newTrajectories1, matchLogIdx, spatialAlignment,autoMatch,  currentPath, rMethod, mapCounter, semantics, leafSize, icpConfigFilePath, inputFiltersConfigFilePath, mapPostFiltersConfigFilePath, computeProbDynamic);
+                Io ->readClouds(XYZRGBL1, normals1, newTrajectories1, matchLogIdx, spatialAlignment,autoMatch,  currentPath, rMethod, mapCounter, semantics, leafSize, icpConfigFilePath, inputFiltersConfigFilePath, mapPostFiltersConfigFilePath, computeProbDynamic, false);
 
                 delete Io;
             }
             //----------------------------------------------------spatial matching---------------------------------------------------------------------------//
 
-
+            int mapCounter=0;
             if (k>0){
                 spatialAlignment=true;
                 for (unsigned int j=0; j<pcdFiles.size(); j++)
@@ -240,15 +284,15 @@ int main()
                     std::string currentPath="";
 
                     //std::cout<<i<<std::endl;
-                    int mapCounter=0;
+
                     //std::cout<<pathOut<<std::endl;
                     //  std::ostringstream ss; ss<<(i);
                     currentPath=pathOut;
                     //std::cout<<currentPath<<std::endl;
                     dir=mkdir (currentPath.c_str(),S_IRWXU);
                     IO* Io =new IO();
-                    Io ->readClouds(XYZRGBL1, normals1, newTrajectories1, matchLogIdx, spatialAlignment,autoMatch,  currentPath, rMethod, mapCounter, semantics, leafSize, icpConfigFilePath, inputFiltersConfigFilePath, mapPostFiltersConfigFilePath, computeProbDynamic);
-
+                    Io ->readClouds(XYZRGBL1, normals1, newTrajectories1, matchLogIdx, spatialAlignment,autoMatch,  currentPath, rMethod, mapCounter, semantics, leafSize, icpConfigFilePath, inputFiltersConfigFilePath, mapPostFiltersConfigFilePath, computeProbDynamic,loopClose);
+                    mapCounter++;
                     delete Io;
                 }
 
@@ -325,7 +369,8 @@ int main()
         dir=mkdir (currentPath.c_str(),S_IRWXU);
         IO* Io =new IO();
         std::vector<std::vector<unsigned int>> matchLogIdx;
-        Io ->readClouds(XYZRGBL, normals, sourceTrajectories, matchLogIdx, spatialAlignment, autoMatch, currentPath, rMethod, mapCounter, semantics, leafSize, icpConfigFilePath, inputFiltersConfigFilePath, mapPostFiltersConfigFilePath, computeProbDynamic);
+        Io ->readClouds(XYZRGBL, normals, sourceTrajectories, matchLogIdx, spatialAlignment, autoMatch, currentPath, rMethod, mapCounter, semantics, leafSize, icpConfigFilePath, inputFiltersConfigFilePath, mapPostFiltersConfigFilePath, computeProbDynamic, false);
+
         delete Io;
     }
 }

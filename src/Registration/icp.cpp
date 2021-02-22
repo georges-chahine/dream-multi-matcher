@@ -153,10 +153,10 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
 
     //    }
 
-    double x0=pcl_new.points[1500].x; double y0=pcl_new.points[1500].y; double z0=pcl_new.points[1500].z;
+    //double x0=pcl_new.points[1500].x; double y0=pcl_new.points[1500].y; double z0=pcl_new.points[1500].z;
     std::cout.precision(17);
-    std::cout<<x0<<" "<<y0<<" "<<z0<<" "<<std::endl;
-    std::cout<<datax(0,1500)<<" "<<datay(0,1500)<<" "<<dataz(0,1500)<<" "<<std::endl;
+   // std::cout<<x0<<" "<<y0<<" "<<z0<<" "<<std::endl;
+    //std::cout<<datax(0,1500)<<" "<<datay(0,1500)<<" "<<dataz(0,1500)<<" "<<std::endl;
     //datax.array()=datax.array()-datax(0,0);
     //datay.array()=datay.array()-datay(0,0);
     //dataz.array()=dataz.array()-dataz(0,0);
@@ -268,6 +268,7 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
             T_to_map_from_new=prior;
 
         }
+
         else
         {
             T_to_map_from_new = icp(newCloud, mapPointCloud, prior);
@@ -281,6 +282,29 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
         std::cout << "   " << error.what() << std::endl;
 
     }
+
+    for (int n=0; n<1; n++){
+
+
+        try
+        {
+          //  std::cout<<"this is how it looks "<<T_to_map_from_new <<std::endl;
+            if (! T_to_map_from_new.isIdentity()  ){
+                break;
+            }
+            else{std::cout<< "condition did not work" <<std::endl;}
+            T_to_map_from_new = icp(newCloud, mapPointCloud, prior);
+        }
+        catch (PM::ConvergenceError& error)
+        {
+            std::cout << "ERROR PM::ICP failed to converge: " << std::endl;
+            std::cout << "   " << error.what() << std::endl;
+
+        }
+    }
+
+
+
 
     // This is not necessary in this example, but could be
     // useful if the same matrix is composed in the loop.
@@ -345,7 +369,7 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
     newCloud = rigidTrans->compute(newCloud, T_previous_alignment);
     T_previous_alignment=T_previous_alignment*T_to_map_from_new;
 
-   // newCloud.save(fullPath3);
+    newCloud.save(fullPath3);
     std::cout<<std::endl;
     std::cout<<fullPath1<<std::endl;
     std::cout<<fullPath2<<std::endl;
@@ -353,8 +377,8 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
     pointCloud->height=1;
     pointCloud->width=pointCloud->points.size();
     std::cout<<"Saving "<<pointCloud->points.size()<<" points"<<std::endl;
-    //pcl::io::savePCDFileASCII (fullPath1, *pointCloud);
-   // pcl::io::savePLYFileASCII (fullPath2, *pointCloud);
+    pcl::io::savePCDFileASCII (fullPath1, *pointCloud);
+    pcl::io::savePLYFileASCII (fullPath2, *pointCloud);
 
     if (filename=="aligned_1")
     {
@@ -364,9 +388,9 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
         std::string fullPath6= currentPath + "/aligned_0.vtk";
         pcl_ref.height=1;
         pcl_ref.width=pcl_ref.points.size();
-      //  pcl::io::savePCDFileASCII (fullPath4, pcl_ref);
-      //  pcl::io::savePLYFileASCII (fullPath5, pcl_ref);
-      //  mapPointCloud.save(fullPath6);
+        pcl::io::savePCDFileASCII (fullPath4, pcl_ref);
+        pcl::io::savePLYFileASCII (fullPath5, pcl_ref);
+        mapPointCloud.save(fullPath6);
 
 
     }

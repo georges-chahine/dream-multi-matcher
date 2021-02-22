@@ -269,10 +269,10 @@ void IO::alignTrajectories(MatrixXd& newTrajectory, MatrixXd& oldTrajectory, TP&
     }
     MatrixXd transformedNewTrajectory2=Eigen::MatrixXd::Constant(3, newTrajectory.rows(),1);
     lowestError=9999999999999999;
-    for (int x=-30; x<30; x++){
-        for (int y=-30; y<30; y++){
+    for (int x=-30; x<30; x=x+1){
+        for (int y=-30; y<30; y=y+1){
             transformedNewTrajectory2=transformedNewTrajectory;
-            for (int i=0; i<newTrajectory.rows(); i++)
+            for (int i=0; i<newTrajectory.rows(); i=i+1)
             {
                 transformedNewTrajectory2(0,i)=transformedNewTrajectory2(0,i)+x;
                 transformedNewTrajectory2(1,i)=transformedNewTrajectory2(1,i)+y;
@@ -297,8 +297,10 @@ void IO::alignTrajectories(MatrixXd& newTrajectory, MatrixXd& oldTrajectory, TP&
             //std::cout<<"error is "<<error<<std::endl;
             if (error<lowestError)   //get theta that gives the lowest nearest neighbor error
             {
+
                 lowestError=error;
                 prior(0,3)=x; prior(1,3)=y;
+                // std::cout<<"error is "<<error<< " x is " <<x<<" y is "<<y<<std::endl;
             }
         }
     }
@@ -307,7 +309,7 @@ void IO::alignTrajectories(MatrixXd& newTrajectory, MatrixXd& oldTrajectory, TP&
 
 }
 
-void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std::vector<pcl::PointCloud<pcl::Normal>> normals, std::vector<std::string> sourceTrajectories, std::vector<std::vector<unsigned int>> matchLogIdx, bool spatialAlignment, bool autoMatch, std::string currentPath, std::string rMethod , int mapNumber, bool semantics, float leafSize, std::string icpConfigFilePath, std::string inputFiltersConfigFilePath, std::string mapPostFiltersConfigFilePath, bool computeProbDynamic)
+void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std::vector<pcl::PointCloud<pcl::Normal>> normals, std::vector<std::string> sourceTrajectories, std::vector<std::vector<unsigned int>> matchLogIdx, bool spatialAlignment, bool autoMatch, std::string currentPath, std::string rMethod , int mapNumber, bool semantics, float leafSize, std::string icpConfigFilePath, std::string inputFiltersConfigFilePath, std::string mapPostFiltersConfigFilePath, bool computeProbDynamic, bool loopCloseFlag)
 {
     std::ofstream poseStream;
     poseStream.precision(16);
@@ -347,7 +349,7 @@ void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std
             std::cout<<"Selection:"<<std::endl;
             //std::cin >> selection;
 
-            if (autoMatch) {     //if (false)
+            if (false) {     //if (autoMatch)
                 selection="all";
             }
             else{
@@ -374,12 +376,27 @@ void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std
                     poseStream<<0<<","<<0<<","<<0<<","<<0<<","<<0<<","<<0<<","<<0<<","<<0<<","<<1<<std::endl;
 
                 }
+                std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBLTemp;
+                std::vector<pcl::PointCloud<pcl::Normal>> normalsTemp;
                 for (int i=1; i<XYZRGBL.size(); i++)
                 {
                     MatrixXd newTrajectory = load_csv<MatrixXd>(sourceTrajectories[i]);
                     MatrixXd oldTrajectory = load_csv<MatrixXd>(sourceTrajectories[0]);
 
-                    //std::cout<<"size is "<<newTrajectory.size()<<std::endl;
+                    double xMaxNewTrajectory=newTrajectory(0,1);
+                    double yMaxNewTrajectory=newTrajectory(0,2);
+                    double xMaxOldTrajectory=oldTrajectory(0,1);
+                    double yMaxOldTrajectory=oldTrajectory(0,2);
+
+                    double xMinNewTrajectory=newTrajectory(0,1);
+                    double yMinNewTrajectory=newTrajectory(0,2);
+                    double xMinOldTrajectory=oldTrajectory(0,1);
+                    double yMinOldTrajectory=oldTrajectory(0,2);
+
+
+
+                    //    std::cout<<xMaxNewTrajectory<<" "<<yMaxNewTrajectory<<" "<< xMaxOldTrajectory<<" "<<yMaxOldTrajectory<<" "<<xMinNewTrajectory<<" "<<yMinNewTrajectory<<" "<<xMinOldTrajectory<<" "<<yMinOldTrajectory<<std::endl;
+
                     TP prior = TP::Identity(4,4);
                     //TP prior = initialEstimate.matrix().cast<float>();
 
@@ -388,7 +405,186 @@ void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std
                     //std::string filename= "aligned_" + std::to_string(matchLogIdx[i][0])+"_"+std::to_string(matchLogIdx[i][1]);
                     //prior2.matrix()(0,3)=oldTrajectory(0,1)-newTrajectory(0,1);
                     // prior2.matrix()(1,3)=oldTrajectory(0,2)-newTrajectory(0,2);
-                    if (spatialAlignment){
+                    double xIncrLc, yIncrLc;
+                    if (loopCloseFlag&& mapNumber==0){
+                        for (int j=1; j<newTrajectory.rows(); j++){
+
+                            if (xMaxNewTrajectory<newTrajectory(j,1)){
+                                xMaxNewTrajectory=newTrajectory(j,1);
+                            }
+
+
+                            if (yMaxNewTrajectory<newTrajectory(j,2)){
+                                yMaxNewTrajectory=newTrajectory(j,2);
+                            }
+
+                            if (xMinNewTrajectory>newTrajectory(j,1)){
+                                xMinNewTrajectory=newTrajectory(j,1);
+                            }
+
+
+                            if (yMinNewTrajectory>newTrajectory(j,2)){
+                                yMinNewTrajectory=newTrajectory(j,2);
+                            }
+
+
+                        }
+                        double oldXMean=oldTrajectory(0,1);
+                        double oldYMean=oldTrajectory(0,2);
+                        for (int j=1; j<oldTrajectory.rows(); j++){
+
+                            if (xMaxOldTrajectory<oldTrajectory(j,1)){
+                                xMaxOldTrajectory=oldTrajectory(j,1);
+                            }
+
+
+                            if (yMaxOldTrajectory<oldTrajectory(j,2)){
+                                yMaxOldTrajectory=oldTrajectory(j,2);
+                            }
+
+                            if (xMinOldTrajectory>oldTrajectory(j,1)){
+                                xMinOldTrajectory=oldTrajectory(j,1);
+                            }
+
+
+                            if (yMinOldTrajectory>oldTrajectory(j,2)){
+                                yMinOldTrajectory=oldTrajectory(j,2);
+                            }
+                            oldXMean=oldTrajectory(j,1)+oldXMean;
+                            oldYMean=oldTrajectory(j,2)+oldYMean;
+
+
+                        }
+                        oldXMean=oldXMean/oldTrajectory.rows()-oldTrajectory(0,1);
+                        oldYMean=oldYMean/oldTrajectory.rows()-oldTrajectory(0,2);
+                        float xIncr=oldXMean;
+                        float yIncr=oldYMean;
+                        //float zIncr=newTrajectory(0,3)-oldTrajectory(0,3);
+
+                        xIncrLc=xIncr;yIncrLc=yIncr;//prior(2,3)=zIncr;
+
+
+
+                        double xDiff=xMaxOldTrajectory-xMinOldTrajectory;
+                        double yDiff=yMaxOldTrajectory-yMinOldTrajectory;
+
+
+                        int trimTolerance=20;
+                        unsigned int k=0;
+                        pcl::PointCloud<pcl::PointXYZRGBL> pcTemp;
+                        pcl::PointCloud<pcl::Normal> pcNrmlTmp;
+                        std::cout<<"start here"<<std::endl;
+                        while (true){     //lc
+                            if (k>=XYZRGBL[0].points.size()){break;}
+                            double x=XYZRGBL[0].points[k].x+oldTrajectory(0,1); double y=XYZRGBL[0].points[k].y+oldTrajectory(0,2);
+
+
+                            if (xDiff>yDiff){
+
+
+                                if ( (x+trimTolerance) <xMinOldTrajectory || (x+trimTolerance) <xMinNewTrajectory ||  (x-trimTolerance) > xMaxNewTrajectory || (x-trimTolerance) > xMaxOldTrajectory)
+                                {
+                                    //                                std::cout<<"filtered!"<<std::endl;
+                                    //       XYZRGBL[0].points.erase(XYZRGBL[0].points.begin() + k );
+                                    //  normals[0].erase(normals[0].begin() + k );
+
+                                }
+                                else
+
+                                {
+                                    pcl::PointXYZRGBL tmpPt= XYZRGBL[0].points[k];
+                                    pcl::Normal tmpNrml=normals[0][k];
+                                    pcTemp.push_back(tmpPt);
+                                    pcNrmlTmp.push_back(tmpNrml);
+                                }
+
+                            }
+
+                            else
+                            {
+
+                                if ( (y+trimTolerance) <yMinOldTrajectory || (y+trimTolerance) <yMinNewTrajectory ||  (y-trimTolerance) > yMaxNewTrajectory || (y-trimTolerance) > yMaxOldTrajectory )
+                                {
+                                    //                                std::cout<<"filtered!"<<std::endl;
+                                    //       XYZRGBL[0].points.erase(XYZRGBL[0].points.begin() + k );
+                                    //  normals[0].erase(normals[0].begin() + k );
+
+                                }
+                                else
+
+                                {
+                                    pcl::PointXYZRGBL tmpPt= XYZRGBL[0].points[k];
+                                    pcl::Normal tmpNrml=normals[0][k];
+                                    pcTemp.push_back(tmpPt);
+                                    pcNrmlTmp.push_back(tmpNrml);
+                                }
+
+                            }
+
+                            k++;
+                        }
+
+                        XYZRGBL[0]=pcTemp;
+                        normals[0]=pcNrmlTmp;
+
+                        pcl::PointCloud<pcl::PointXYZRGBL> pcTemp1;
+                        pcl::PointCloud<pcl::Normal> pcNrmlTmp1;
+                        std::cout<<"end here"<<std::endl;
+                        k=0;
+                        while (true){     //lc
+                            if (k>=XYZRGBL[i].points.size()){break;}
+                            double x=XYZRGBL[i].points[k].x+newTrajectory(0,1); double y=XYZRGBL[i].points[k].y+newTrajectory(0,2);
+
+
+                            if (xDiff>yDiff){
+
+
+                                if ( (x+trimTolerance) <xMinOldTrajectory || (x+trimTolerance) <xMinNewTrajectory ||  (x-trimTolerance) > xMaxNewTrajectory || (x-trimTolerance) > xMaxOldTrajectory)
+                                {
+                                    //                                std::cout<<"filtered!"<<std::endl;
+                                    //       XYZRGBL[0].points.erase(XYZRGBL[0].points.begin() + k );
+                                    //  normals[0].erase(normals[0].begin() + k );
+
+                                }
+                                else
+
+                                {
+                                    pcl::PointXYZRGBL tmpPt1= XYZRGBL[i].points[k];
+                                    pcl::Normal tmpNrml1=normals[i][k];
+                                    pcTemp1.push_back(tmpPt1);
+                                    pcNrmlTmp1.push_back(tmpNrml1);
+                                }
+
+
+                            }
+                            else
+                            {
+                                if ( (y+trimTolerance) <yMinOldTrajectory || (y+trimTolerance) <yMinNewTrajectory ||  (y-trimTolerance) > yMaxNewTrajectory || (y-trimTolerance) > yMaxOldTrajectory )
+                                {
+                                    //                                std::cout<<"filtered!"<<std::endl;
+                                    //       XYZRGBL[0].points.erase(XYZRGBL[0].points.begin() + k );
+                                    //  normals[0].erase(normals[0].begin() + k );
+
+                                }
+                                else
+
+                                {
+                                    pcl::PointXYZRGBL tmpPt1= XYZRGBL[i].points[k];
+                                    pcl::Normal tmpNrml1=normals[i][k];
+                                    pcTemp1.push_back(tmpPt1);
+                                    pcNrmlTmp1.push_back(tmpNrml1);
+                                }
+
+                            }
+
+                            k++;
+                        }
+
+                        XYZRGBL[i]=pcTemp1;
+                        normals[i]=pcNrmlTmp1;
+                    }
+
+                    if ( spatialAlignment && !(loopCloseFlag && mapNumber==0) ){ //spatialAlignment
                         double distance=9999999;
                         double timeMatch=newTrajectory(0,0);
                         unsigned int spatialIndex;
@@ -438,8 +634,16 @@ void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std
                     }
 
                     else{
-                        alignTrajectories(newTrajectory,oldTrajectory, prior);
+                        if (loopCloseFlag&& mapNumber==0){
+                            prior(0,3)=xIncrLc;prior(1,3)=yIncrLc;
+
+                        }
+                        else
+                        {
+                            alignTrajectories(newTrajectory,oldTrajectory, prior);
+                        }
                     }
+
                     std::cout<<"prior is \n"<<prior.matrix()<<std::endl;
                     T_previous_alignment=PM::TransformationParameters::Identity(4,4);  //comment out this line if matching with XYZRGBL[i-1] instead of XYZRGBL[0]
 
