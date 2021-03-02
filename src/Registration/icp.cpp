@@ -155,7 +155,7 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
 
     //double x0=pcl_new.points[1500].x; double y0=pcl_new.points[1500].y; double z0=pcl_new.points[1500].z;
     std::cout.precision(17);
-   // std::cout<<x0<<" "<<y0<<" "<<z0<<" "<<std::endl;
+    // std::cout<<x0<<" "<<y0<<" "<<z0<<" "<<std::endl;
     //std::cout<<datax(0,1500)<<" "<<datay(0,1500)<<" "<<dataz(0,1500)<<" "<<std::endl;
     //datax.array()=datax.array()-datax(0,0);
     //datay.array()=datay.array()-datay(0,0);
@@ -288,7 +288,7 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
 
         try
         {
-          //  std::cout<<"this is how it looks "<<T_to_map_from_new <<std::endl;
+            //  std::cout<<"this is how it looks "<<T_to_map_from_new <<std::endl;
             if (! T_to_map_from_new.isIdentity()  ){
                 break;
             }
@@ -376,24 +376,31 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
     std::cout<<std::endl;
     pointCloud->height=1;
     pointCloud->width=pointCloud->points.size();
-    std::cout<<"Saving "<<pointCloud->points.size()<<" points"<<std::endl;
-    pcl::io::savePCDFileASCII (fullPath1, *pointCloud);
-    pcl::io::savePLYFileASCII (fullPath2, *pointCloud);
 
-    if (filename=="aligned_1")
-    {
-        pcl::PointCloud<pcl::PointXYZRGBL>::Ptr pointCloud0 (new pcl::PointCloud<pcl::PointXYZRGBL>);
-        std::string fullPath4= currentPath + "/aligned_0.pcd";
-        std::string fullPath5= currentPath + "/aligned_0.ply";
-        std::string fullPath6= currentPath + "/aligned_0.vtk";
-        pcl_ref.height=1;
-        pcl_ref.width=pcl_ref.points.size();
-        pcl::io::savePCDFileASCII (fullPath4, pcl_ref);
-        pcl::io::savePLYFileASCII (fullPath5, pcl_ref);
-        mapPointCloud.save(fullPath6);
+    if (!spacialAlignment){
 
 
+
+        std::cout<<"Saving "<<pointCloud->points.size()<<" points"<<std::endl;
+        pcl::io::savePCDFileASCII (fullPath1, *pointCloud);
+        pcl::io::savePLYFileASCII (fullPath2, *pointCloud);
+
+        if (filename=="aligned_1")
+        {
+            pcl::PointCloud<pcl::PointXYZRGBL>::Ptr pointCloud0 (new pcl::PointCloud<pcl::PointXYZRGBL>);
+            std::string fullPath4= currentPath + "/aligned_0.pcd";
+            std::string fullPath5= currentPath + "/aligned_0.ply";
+            std::string fullPath6= currentPath + "/aligned_0.vtk";
+            pcl_ref.height=1;
+            pcl_ref.width=pcl_ref.points.size();
+            pcl::io::savePCDFileASCII (fullPath4, pcl_ref);
+            pcl::io::savePLYFileASCII (fullPath5, pcl_ref);
+            mapPointCloud.save(fullPath6);
+
+
+        }
     }
+
 }
 
 
