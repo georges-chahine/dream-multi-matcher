@@ -92,7 +92,7 @@ int main()
                 {
                     if (loopClose){
                         pcdFile.push_back(strPcdNameLc);
-                        pcdFile.push_back(strCsvNameLc);
+                        csvFile.push_back(strCsvNameLc);
                     }
                     break;
                 }
