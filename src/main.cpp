@@ -74,8 +74,8 @@ int main()
             std::vector<std::string> csvFile;
             if (loopClose){
 
-                std::string strPcdNameLc=autoMatchDir[i]+"/"+loopCloseKF+".pcd";
-                std::string strCsvNameLc=autoMatchDir[i]+"/"+loopCloseKF+".csv";
+                strPcdNameLc=autoMatchDir[i]+"/"+loopCloseKF+".pcd";
+                strCsvNameLc=autoMatchDir[i]+"/"+loopCloseKF+".csv";
 
                 pcdFile.push_back(strPcdNameLc);
                 csvFile.push_back(strCsvNameLc);
@@ -93,8 +93,6 @@ int main()
                     if (loopClose){
                         pcdFile.push_back(strPcdNameLc);
                         pcdFile.push_back(strCsvNameLc);
-                        pcdFiles.push_back(pcdFile);
-                        csvFiles.push_back(csvFile);
                     }
                     break;
                 }
