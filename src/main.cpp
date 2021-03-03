@@ -93,6 +93,8 @@ int main()
                     if (loopClose){
                         pcdFile.push_back(strPcdNameLc);
                         pcdFile.push_back(strCsvNameLc);
+                        pcdFiles.push_back(pcdFile);
+                        csvFiles.push_back(csvFile);
                     }
                     break;
                 }
@@ -305,6 +307,8 @@ int main()
             prevNormals=normals;
         }
     }
+
+
     else {
 
 
