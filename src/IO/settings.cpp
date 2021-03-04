@@ -35,8 +35,8 @@ std::vector<std::string> labels { "Ground",
                                                "Build",
                                                "Pole",
                                                "Traffic sign",
-                                               "Vegetation",   //9
-                                               "Terrain",      //10
+                                               "Vegetation",   //8
+                                               "Terrain",      //9
                                                "Sky",
                                                "Person",
                                                "Rider",
