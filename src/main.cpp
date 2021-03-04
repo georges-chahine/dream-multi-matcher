@@ -45,7 +45,7 @@ int main()
 
     bool loopClose=false;
 
-    if (loopCloseStr=="True" || loopCloseStr=="true")
+     if (loopCloseStr=="True" || loopCloseStr=="true")
     {
         loopClose=true;
     }
@@ -77,8 +77,8 @@ int main()
                 strPcdNameLc=autoMatchDir[i]+"/"+loopCloseKF+".pcd";
                 strCsvNameLc=autoMatchDir[i]+"/"+loopCloseKF+".csv";
 
-                pcdFile.push_back(strPcdNameLc);
-                csvFile.push_back(strCsvNameLc);
+              //  pcdFile.push_back(strPcdNameLc);
+             //   csvFile.push_back(strCsvNameLc);
             }
 
             while(true){
@@ -91,8 +91,10 @@ int main()
                 if (!fPcd.good()||!fCsv.good())
                 {
                     if (loopClose){
-                        pcdFile.push_back(strPcdNameLc);
-                        csvFile.push_back(strCsvNameLc);
+                   //     pcdFile.push_back(strPcdNameLc);
+                  //      csvFile.push_back(strCsvNameLc);
+                        pcdFile.insert(pcdFile.begin() ,pcdFile.back() );
+                        csvFile.insert(csvFile.begin() ,csvFile.back() );
                     }
                     break;
                 }
@@ -107,6 +109,8 @@ int main()
             csvFiles.push_back(csvFile);
 
         }
+
+
 
 
 
