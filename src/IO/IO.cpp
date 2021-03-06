@@ -646,9 +646,16 @@ void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std
 
                     std::cout<<"prior is \n"<<prior.matrix()<<std::endl;
                     T_previous_alignment=PM::TransformationParameters::Identity(4,4);  //comment out this line if matching with XYZRGBL[i-1] instead of XYZRGBL[0]
+                    int icpCounter=0;
+                    while (T_previous_alignment.isIdentity(0.0001)){
+                        std::cout<<"ICP attempt #"<<icpCounter<<std::endl;
+                        ICP* Icp =new ICP();
+                        Icp->alignMaps(XYZRGBL[0],normals[0], XYZRGBL[i],normals[i], prior, spatialAlignment, currentPath, filename, leafSize,icpConfigFilePath, inputFiltersConfigFilePath, mapPostFiltersConfigFilePath, computeProbDynamic, semantics, autoMatch, T_previous_alignment );
+                        delete Icp;
 
-                    ICP* Icp =new ICP();
-                    Icp->alignMaps(XYZRGBL[0],normals[0], XYZRGBL[i],normals[i], prior, spatialAlignment, currentPath, filename, leafSize,icpConfigFilePath, inputFiltersConfigFilePath, mapPostFiltersConfigFilePath, computeProbDynamic, semantics, T_previous_alignment );
+                        if (icpCounter>=3){break;}  //try icp 3 times before giving up
+                        icpCounter++;
+                    }
                     Eigen::Matrix3f poseRot=T_previous_alignment.block(0,0,3,3);
                     Eigen::Quaternionf q(poseRot);
                     if (autoMatch){
@@ -658,7 +665,7 @@ void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std
                         poseStream<<0<<","<<0<<","<<T_previous_alignment(0,3)<<","<<T_previous_alignment(1,3)<<","<<T_previous_alignment(2,3)<<","<<q.x()<<","<<q.y()<<","<<q.z()<<","<<q.w()<<std::endl;
                     }
 
-                    delete Icp;
+
                 }
 
             }

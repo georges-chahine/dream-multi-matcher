@@ -11,7 +11,7 @@ ICP::~ICP()
 {
 }
 
-void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud<pcl::Normal> ref_normals, pcl::PointCloud<pcl::PointXYZRGBL> pcl_new, pcl::PointCloud<pcl::Normal> new_normals, PM::TransformationParameters prior, bool spacialAlignment, std::string currentPath, std::string filename, float leafSize, std::string icpConfigFilePath, std::string inputFiltersConfigFilePath, std::string mapPostFiltersConfigFilePath, bool computeProbDynamic, bool semantics, PM::TransformationParameters &T_previous_alignment )
+void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud<pcl::Normal> ref_normals, pcl::PointCloud<pcl::PointXYZRGBL> pcl_new, pcl::PointCloud<pcl::Normal> new_normals, PM::TransformationParameters prior, bool spacialAlignment, std::string currentPath, std::string filename, float leafSize, std::string icpConfigFilePath, std::string inputFiltersConfigFilePath, std::string mapPostFiltersConfigFilePath, bool computeProbDynamic, bool semantics, bool autoMatch, PM::TransformationParameters &T_previous_alignment )
 {
 
     // ---------------------------------------------------------------------------------------------------------------//
@@ -377,7 +377,7 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
     pointCloud->height=1;
     pointCloud->width=pointCloud->points.size();
 
-    if (!spacialAlignment){
+    if (!autoMatch){
 
 
 
