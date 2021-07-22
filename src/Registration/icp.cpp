@@ -1,14 +1,19 @@
 #include "IO/IO.h"
 #include "IO/settings.h"
 #include "Registration/icp.h"
+#include "yaml-cpp/yaml.h"
 namespace matcher
 {
+	using namespace YAML;
+
 ICP::ICP()
 {
+
 }
 
 ICP::~ICP()
 {
+
 }
 
 void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud<pcl::Normal> ref_normals, pcl::PointCloud<pcl::PointXYZRGBL> pcl_new, pcl::PointCloud<pcl::Normal> new_normals, PM::TransformationParameters prior, bool spacialAlignment, std::string currentPath, std::string filename, float leafSize, std::string icpConfigFilePath, std::string inputFiltersConfigFilePath, std::string mapPostFiltersConfigFilePath, bool computeProbDynamic, bool semantics, bool autoMatch, PM::TransformationParameters &T_previous_alignment )
@@ -77,7 +82,6 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
         std::cout<<"loaded post filter yaml!"<<std::endl;
         ifs.close();
     }
-
 
     // load YAML config
     //ifstream ifs(icpyml);
@@ -243,8 +247,38 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
         newCloud.addDescriptor("probabilityDynamic", PM::Matrix::Constant(1, newCloud.features.cols(), priorDynamic));
         mapPointCloud.addDescriptor("probabilityDynamic", PM::Matrix::Constant(1, mapPointCloud.features.cols(), priorDynamic));
     }
+
     inputFilters.apply(newCloud);
     inputFilters.apply(mapPointCloud);
+    
+    //Parser parser ("conf.yaml");
+   // YAML_PM::Node doc;
+    //parser.GetNextDocument(doc);
+
+
+
+    Node config2 = LoadFile(icpConfigFilePath.c_str());
+    Node config3 = config2["matcher"];
+    Node config4 = config3["KDTreeMatcher"];
+
+    auto nbPts0 = config4["knn"].as<std::string>();
+    
+    
+    int icpNbPts=std::stoi(nbPts0);
+   // std::cout<<"number of required points is "<<nbPts<<" points"<<std::endl;
+
+    if (newCloud.getNbPoints()<icpNbPts || mapPointCloud.getNbPoints()<icpNbPts)
+    
+    {
+	std::cout<<"insufficient nb of points, relaxing input filters..."<<std::endl;
+	newCloud=data;
+	mapPointCloud=ref;
+	mapPostFilters.apply(newCloud);
+	mapPostFilters.apply(mapPointCloud);
+    }
+
+    //std::cout<<"point count is "<<newCloud.getNbPoints()<<std::endl;
+
     //mapPointCloud=ref;
     //if(mapPointCloud.getNbPoints()  == 0)
     // {
@@ -320,8 +354,8 @@ void ICP::alignMaps(pcl::PointCloud<pcl::PointXYZRGBL> pcl_ref,  pcl::PointCloud
     // Merge point clouds to map
 
     // mapPointCloud.concatenate(newCloud);
-    mapPostFilters.apply(newCloud);
-    mapPostFilters.apply(mapPointCloud);
+    //mapPostFilters.apply(newCloud);
+    //mapPostFilters.apply(mapPointCloud);
 
     mapPointCloud = densityFilter->filter(mapPointCloud);
     mapPointCloud = maxDensitySubsample->filter(mapPointCloud);

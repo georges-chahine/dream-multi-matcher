@@ -1,33 +1,57 @@
 ---
 sourceClouds:
-- /home/gchahine/outbound/0/semantic_icp_3.pcd
-- /home/gchahine/outbound/1/semantic_icp_3.pcd
+- /home/gpu_user/gchahine/mapperOutput_Husky/0/icp_local_semantics.pcd
+- /home/gpu_user/gchahine/mapperOutput_Husky/1/icp_local_semantics.pcd
+- /home/gpu_user/gchahine/mapperOutput_Husky/2/icp_local_semantics.pcd
+- /home/gpu_user/gchahine/mapperOutput_Husky/3/icp_local_semantics.pcd
+- /home/gpu_user/gchahine/mapperOutput_Husky/4/icp_local_semantics.pcd
+- /home/gpu_user/gchahine/mapperOutput_Husky/5/icp_local_semantics.pcd
+- /home/gpu_user/gchahine/mapperOutput_Husky/6/icp_local_semantics.pcd
+- /home/gpu_user/gchahine/mapperOutput_Husky/7/icp_local_semantics.pcd
+- /home/gpu_user/gchahine/mapperOutput_Husky/8/icp_local_semantics.pcd
+- /home/gpu_user/gchahine/mapperOutput_Husky/9/icp_local_semantics.pcd
+- /home/gpu_user/gchahine/mapperOutput_Husky/10/icp_local_semantics.pcd
+- /home/gpu_user/gchahine/mapperOutput_Husky/11/icp_local_semantics.pcd
+- /home/gpu_user/gchahine/mapperOutput_Husky/12/icp_local_semantics.pcd
 sourceTrajectories:
-- /home/gchahine/outbound/0/semantic_icp_3.csv
-- /home/gchahine/outbound/1/semantic_icp_3.csv
+- /home/gpu_user/gchahine/mapperOutput_Husky/0/icp_local_semantics.csv
+- /home/gpu_user/gchahine/mapperOutput_Husky/1/icp_local_semantics.csv
+- /home/gpu_user/gchahine/mapperOutput_Husky/2/icp_local_semantics.csv
+- /home/gpu_user/gchahine/mapperOutput_Husky/3/icp_local_semantics.csv
+- /home/gpu_user/gchahine/mapperOutput_Husky/4/icp_local_semantics.csv
+- /home/gpu_user/gchahine/mapperOutput_Husky/5/icp_local_semantics.csv
+- /home/gpu_user/gchahine/mapperOutput_Husky/6/icp_local_semantics.csv
+- /home/gpu_user/gchahine/mapperOutput_Husky/7/icp_local_semantics.csv
+- /home/gpu_user/gchahine/mapperOutput_Husky/8/icp_local_semantics.csv
+- /home/gpu_user/gchahine/mapperOutput_Husky/9/icp_local_semantics.csv
+- /home/gpu_user/gchahine/mapperOutput_Husky/10/icp_local_semantics.csv
+- /home/gpu_user/gchahine/mapperOutput_Husky/11/icp_local_semantics.csv
+- /home/gpu_user/gchahine/mapperOutput_Husky/12/icp_local_semantics.csv
 mapRegistration: "gps"
 semantics: "True"
-voxelSize: "0.2"
-pathOut: "/home/gchahine/matcherOutput/"
-icpConfig: "/home/gchahine/packages/dream-multi-matcher/icpConfig/icp_param.yaml"
-icpConfigLoopClosure: "/home/gchahine/packages/dream-multi-matcher/icpConfig/icp_param_lc.yaml"
-icpInputFilters: "/home/gchahine/packages/dream-multi-matcher/icpConfig/input_filters.yaml"
-icpPostFilters: "/home/gchahine/packages/dream-multi-matcher/icpConfig/mapPost_filters.yaml"
+voxelSize: "0.19"
+pathOut: "/home/gpu_user/gchahine/matcherOutput/19/"
+icpConfig: "/home/gpu_user/gchahine/packages/dream-multi-matcher/icpConfig/icp_param.yaml"
+icpConfigLoopClosure: "/home/gpu_user/gchahine/packages/dream-multi-matcher/icpConfig/icp_param_lc.yaml"
+icpInputFilters: "/home/gpu_user/gchahine/packages/dream-multi-matcher/icpConfig/input_filters.yaml"
+icpPostFilters: "/home/gpu_user/gchahine/packages/dream-multi-matcher/icpConfig/mapPost_filters.yaml"
 icpComputeProbDynamic: "True"
 autoMatch: "true"
 autoLoopClose: "true"
 loopCloseKF: "semantic_icp_lc"
 autoMatchDir:
-- "/mnt/storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/keyframes/new/0/"
-- "/mnt/storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/keyframes/new/1/"
-- "/mnt/storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/keyframes/new/2/"
-- "/mnt/storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/keyframes/new/3/"
-- "/mnt/storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/keyframes/new/4/"
-- "/mnt/storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/keyframes/new/5/"
-- "/mnt/storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/keyframes/new/6/"
-- "/mnt/storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/keyframes/new/7/"
+- "/home/gpu_user/gchahine/mapperOutput_full/0/"
+- "/home/gpu_user/gchahine/mapperOutput_full/1/"
+- "/home/gpu_user/gchahine/mapperOutput_full/2/"
+- "/home/gpu_user/gchahine/mapperOutput_full/3/"
+- "/home/gpu_user/gchahine/mapperOutput_full/4/"
+- "/home/gpu_user/gchahine/mapperOutput_full/5/"
+- "/home/gpu_user/gchahine/mapperOutput_full/6/"
+- "/home/gpu_user/gchahine/mapperOutput_full/7/"
+- "/home/gpu_user/gchahine/mapperOutput_full/8/"
+- "/home/gpu_user/gchahine/mapperOutput_full/9/"
+- "/home/gpu_user/gchahine/mapperOutput_full/10/"
+- "/home/gpu_user/gchahine/mapperOutput_full/11/"
 autoNameTemplate: "semantic_icp_"
 autoKeyFrameDelta: "25"  
 autoVerify: "True"
-
-
