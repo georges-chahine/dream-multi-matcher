@@ -1,0 +1,56 @@
+---
+sourceClouds:
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/0/icp_local_semantics.pcd
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/1/icp_local_semantics.pcd
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/2/icp_local_semantics.pcd
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/3/icp_local_semantics.pcd
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/4/icp_local_semantics.pcd
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/5/icp_local_semantics.pcd
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/6/icp_local_semantics.pcd
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/7/icp_local_semantics.pcd
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/8/icp_local_semantics.pcd
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/9/icp_local_semantics.pcd
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/10/icp_local_semantics.pcd
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/11/icp_local_semantics.pcd
+sourceTrajectories:
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/0/icp_local_semantics.csv
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/1/icp_local_semantics.csv
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/2/icp_local_semantics.csv
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/3/icp_local_semantics.csv
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/4/icp_local_semantics.csv
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/5/icp_local_semantics.csv
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/6/icp_local_semantics.csv
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/7/icp_local_semantics.csv
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/8/icp_local_semantics.csv
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/9/icp_local_semantics.csv
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/10/icp_local_semantics.csv
+- /mnt/dream-storage/Backpack_Dataset/cross-seasonal-semantic-dataset/lake-bPearl/post/mapper_special_kf_corner/11/icp_local_semantics.csv
+mapRegistration: "gps"
+semantics: "True"
+voxelSize: "0.19"
+pathOut: "/home/gpu_user/gchahine/matcherOutputCorner/"
+icpConfig: "/home/gpu_user/gchahine/packages/dream-multi-matcher/icpConfig/icp_param.yaml"
+icpConfigLoopClosure: "/home/gpu_user/gchahine/packages/dream-multi-matcher/icpConfig/icp_param_lc.yaml"
+icpInputFilters: "/home/gpu_user/gchahine/packages/dream-multi-matcher/icpConfig/input_filters.yaml"
+icpPostFilters: "/home/gpu_user/gchahine/packages/dream-multi-matcher/icpConfig/mapPost_filters.yaml"
+icpComputeProbDynamic: "True"
+autoMatch: "false"
+autoLoopClose: "true"
+loopCloseKF: "semantic_icp_lc"
+autoMatchDir:
+- "/home/gpu_user/gchahine/mapperOutput_full/0/"
+- "/home/gpu_user/gchahine/mapperOutput_full/1/"
+- "/home/gpu_user/gchahine/mapperOutput_full/2/"
+- "/home/gpu_user/gchahine/mapperOutput_full/3/"
+- "/home/gpu_user/gchahine/mapperOutput_full/4/"
+- "/home/gpu_user/gchahine/mapperOutput_full/5/"
+- "/home/gpu_user/gchahine/mapperOutput_full/6/"
+- "/home/gpu_user/gchahine/mapperOutput_full/7/"
+- "/home/gpu_user/gchahine/mapperOutput_full/8/"
+- "/home/gpu_user/gchahine/mapperOutput_full/9/"
+- "/home/gpu_user/gchahine/mapperOutput_full/10/"
+- "/home/gpu_user/gchahine/mapperOutput_full/11/"
+autoNameTemplate: "semantic_icp_"
+autoKeyFrameDelta: "25"  
+autoVerify: "True"
+
