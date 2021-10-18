@@ -1,42 +1,20 @@
 ---
 sourceClouds:
-- /home/gpu_user/gchahine/mapperOutput_Husky/0/icp_local_semantics.pcd
-- /home/gpu_user/gchahine/mapperOutput_Husky/1/icp_local_semantics.pcd
-- /home/gpu_user/gchahine/mapperOutput_Husky/2/icp_local_semantics.pcd
-- /home/gpu_user/gchahine/mapperOutput_Husky/3/icp_local_semantics.pcd
-- /home/gpu_user/gchahine/mapperOutput_Husky/4/icp_local_semantics.pcd
-- /home/gpu_user/gchahine/mapperOutput_Husky/5/icp_local_semantics.pcd
-- /home/gpu_user/gchahine/mapperOutput_Husky/6/icp_local_semantics.pcd
-- /home/gpu_user/gchahine/mapperOutput_Husky/7/icp_local_semantics.pcd
-- /home/gpu_user/gchahine/mapperOutput_Husky/8/icp_local_semantics.pcd
-- /home/gpu_user/gchahine/mapperOutput_Husky/9/icp_local_semantics.pcd
-- /home/gpu_user/gchahine/mapperOutput_Husky/10/icp_local_semantics.pcd
-- /home/gpu_user/gchahine/mapperOutput_Husky/11/icp_local_semantics.pcd
-- /home/gpu_user/gchahine/mapperOutput_Husky/12/icp_local_semantics.pcd
+- /home/gchahine/cloud_accumulator/0/gps_global_1.pcd
+- /home/gchahine/cloud_accumulator/0/gps_global_2.pcd
 sourceTrajectories:
-- /home/gpu_user/gchahine/mapperOutput_Husky/0/icp_local_semantics.csv
-- /home/gpu_user/gchahine/mapperOutput_Husky/1/icp_local_semantics.csv
-- /home/gpu_user/gchahine/mapperOutput_Husky/2/icp_local_semantics.csv
-- /home/gpu_user/gchahine/mapperOutput_Husky/3/icp_local_semantics.csv
-- /home/gpu_user/gchahine/mapperOutput_Husky/4/icp_local_semantics.csv
-- /home/gpu_user/gchahine/mapperOutput_Husky/5/icp_local_semantics.csv
-- /home/gpu_user/gchahine/mapperOutput_Husky/6/icp_local_semantics.csv
-- /home/gpu_user/gchahine/mapperOutput_Husky/7/icp_local_semantics.csv
-- /home/gpu_user/gchahine/mapperOutput_Husky/8/icp_local_semantics.csv
-- /home/gpu_user/gchahine/mapperOutput_Husky/9/icp_local_semantics.csv
-- /home/gpu_user/gchahine/mapperOutput_Husky/10/icp_local_semantics.csv
-- /home/gpu_user/gchahine/mapperOutput_Husky/11/icp_local_semantics.csv
-- /home/gpu_user/gchahine/mapperOutput_Husky/12/icp_local_semantics.csv
+- SKIP
+- SKIP
 mapRegistration: "gps"
-semantics: "True"
-voxelSize: "0.19"
-pathOut: "/home/gpu_user/gchahine/matcherOutput/19/"
-icpConfig: "/home/gpu_user/gchahine/packages/dream-multi-matcher/icpConfig/icp_param.yaml"
-icpConfigLoopClosure: "/home/gpu_user/gchahine/packages/dream-multi-matcher/icpConfig/icp_param_lc.yaml"
-icpInputFilters: "/home/gpu_user/gchahine/packages/dream-multi-matcher/icpConfig/input_filters.yaml"
-icpPostFilters: "/home/gpu_user/gchahine/packages/dream-multi-matcher/icpConfig/mapPost_filters.yaml"
+semantics: "False"
+voxelSize: "0.01"
+pathOut: "/home/gchahine/aligned_calib"
+icpConfig: "/home/gchahine/packages/dream-multi-matcher/icpConfig/icp_param.yaml"
+icpConfigLoopClosure: "/home/gchahine/packages/dream-multi-matcher/icpConfig/icp_param_lc.yaml"
+icpInputFilters: "/home/gchahine/packages/dream-multi-matcher/icpConfig/input_filters.yaml"
+icpPostFilters: "/home/gchahine/packages/dream-multi-matcher/icpConfig/mapPost_filters.yaml"
 icpComputeProbDynamic: "True"
-autoMatch: "true"
+autoMatch: "false"
 autoLoopClose: "true"
 loopCloseKF: "semantic_icp_lc"
 autoMatchDir:

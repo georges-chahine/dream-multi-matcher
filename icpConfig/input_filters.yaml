@@ -1,10 +1,10 @@
 - BoundingBoxDataPointsFilter:
-    xMin: -1
-    xMax: 1
-    yMin: -1
-    yMax: 1
-    zMin: -1
-    zMax: 2
+    xMin: -0.1
+    xMax: 0.1
+    yMin: -0.1
+    yMax: 0.1
+    zMin: -0.1
+    zMax: 0.1
     removeInside: 1
 
 - CutAtDescriptorThresholdDataPointsFilter:
@@ -13,7 +13,7 @@
     threshold: 0.01
 
 - RandomSamplingDataPointsFilter:
-    prob: 0.04  #0.035
+    prob: 0.99  #0.035
 
 ## - OctreeGridDataPointsFilter:
 ##     maxSizeByNode: 0.3
@@ -27,7 +27,7 @@
 ##     keepNormals: 1
 
 - FixStepSamplingDataPointsFilter:
-      startStep: 2
+      startStep: 1
 
 - SurfaceNormalDataPointsFilter:
       knn: 15
@@ -39,7 +39,7 @@
       sortEigen: 1
 
 - MaxDensityDataPointsFilter:
-      maxDensity: 10  #100
+      maxDensity: 1000000  #100
 
 #- ShadowDataPointsFilter:
 #      eps: 0.2 ##0.4

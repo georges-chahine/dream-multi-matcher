@@ -380,9 +380,12 @@ void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std
                 std::vector<pcl::PointCloud<pcl::Normal>> normalsTemp;
                 for (int i=1; i<XYZRGBL.size(); i++)
                 {
-                    MatrixXd newTrajectory = load_csv<MatrixXd>(sourceTrajectories[i]);
-                    MatrixXd oldTrajectory = load_csv<MatrixXd>(sourceTrajectories[0]);
-
+                    MatrixXd newTrajectory ;
+                    MatrixXd oldTrajectory ;
+                    if (sourceTrajectories[0]!="SKIP"){
+                        newTrajectory = load_csv<MatrixXd>(sourceTrajectories[i]);
+                        oldTrajectory = load_csv<MatrixXd>(sourceTrajectories[0]);
+                    }
 
 
 
@@ -398,7 +401,7 @@ void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std
                     // prior2.matrix()(1,3)=oldTrajectory(0,2)-newTrajectory(0,2);
 
 
-                    if (prior0.isIdentity(0.0001)){
+                    if (prior0.isIdentity(0.0001) && sourceTrajectories[0]!="SKIP"){
 
 
                         if ( spatialAlignment && !(loopCloseFlag && mapNumber==0) ){ //spatialAlignment
@@ -444,7 +447,10 @@ void IO::readClouds(std::vector<pcl::PointCloud<pcl::PointXYZRGBL>> XYZRGBL, std
                             //  }
                         }
                     }
-                    else{
+
+
+                    else
+                    {
 
                         prior=prior0.cast<float>();
 
